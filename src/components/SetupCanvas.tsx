@@ -1,13 +1,11 @@
-'use client'
-
 import { Canvas } from '@react-three/fiber'
-import { GRID_SIZE } from '@/lib/engine/config'
+import { GRID_SIZE } from '@/engine/config'
 
 /**
  * Toolchain placeholder, not the game.
  *
- * Its only job is to prove that React Three Fiber, `three` and the Netlify
- * Next.js runtime all build and render together before any scene work starts.
+ * Its only job is to prove that React Three Fiber, `three` and the Vite
+ * production build all work together before any scene work starts.
  * The real scene replaces this whole file in the 3D-scene task — don't extend it.
  */
 export function SetupCanvas() {

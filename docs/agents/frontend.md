@@ -7,7 +7,7 @@ the D-pad, the HUD and the start / game-over screens.
 
 ## What you consume
 
-The engine (`lib/engine/`) is the single source of truth for every rule. Its
+The engine (`src/engine/`) is the single source of truth for every rule. Its
 contract is [`docs/api/game-engine.md`](../api/game-engine.md) — read it, and
 render `GameState` rather than recomputing anything from it.
 
@@ -18,7 +18,7 @@ it belongs in the engine.
 ## Architecture
 
 ```
-lib/store/gameStore.ts   Zustand. Holds GameState + bestScore. Calls the engine.
+src/store/gameStore.ts   Zustand. Holds GameState + bestScore. Calls the engine.
 components/Scene.tsx     <Canvas> and everything inside it.
 components/Board.tsx     Grass plane, trees, rocks.
 components/Snake.tsx     Segment meshes from state.snake.
@@ -78,6 +78,6 @@ cylinder. Rocks are a low-detail `icosahedronGeometry`. All in code; no models.
 - [ ] The page never scrolls or zooms during play, on touch or desktop
 - [ ] D-pad and keyboard both drive the snake; reversals do nothing
 - [ ] Start, in-game score and game-over screens all work; best score persists
-- [ ] No game rule is implemented outside `lib/engine/`
+- [ ] No game rule is implemented outside `src/engine/`
 - [ ] `bun run check` and `bun run build` green
 - [ ] PR opened from your assigned branch, Deploy Preview verified building

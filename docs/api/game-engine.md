@@ -2,15 +2,15 @@
 
 `snake-3d` has no HTTP API — it is a fully client-side game. The contract that
 lets the backend and frontend tasks proceed in parallel is therefore the **public
-surface of `lib/engine/`**.
+surface of `src/engine/`**.
 
-This document is the spec. `lib/engine/types.ts` and `lib/engine/config.ts` are
+This document is the spec. `src/engine/types.ts` and `src/engine/config.ts` are
 the source of truth for the types and the board layout, and they are already
-merged. The Backend Engineer implements `lib/engine/index.ts` against this
+merged. The Backend Engineer implements `src/engine/index.ts` against this
 document. The Frontend Engineer renders `GameState` and never reimplements any
 rule described here.
 
-**Hard constraint:** nothing under `lib/engine/` may import React, `three`,
+**Hard constraint:** nothing under `src/engine/` may import React, `three`,
 `@react-three/*`, `zustand`, or touch `window`, `document` or `localStorage`.
 It is pure TypeScript, and every function is pure: same inputs, same output, no
 mutation of the state passed in.

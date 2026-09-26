@@ -1,6 +1,6 @@
 import { SetupCanvas } from '@/components/SetupCanvas'
 
-export default function HomePage() {
+export function App() {
   return (
     <main style={{ position: 'fixed', inset: 0 }}>
       <SetupCanvas />

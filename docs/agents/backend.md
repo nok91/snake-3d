@@ -2,7 +2,7 @@
 
 Read [`AGENTS.md`](../../AGENTS.md) first.
 
-There is no server in this project. Your domain is **`lib/engine/`**: the pure
+There is no server in this project. Your domain is **`src/engine/`**: the pure
 TypeScript game logic and its unit tests. It is the load-bearing part of the
 game — every rule the player experiences lives here, and the 3D code only draws
 the result.
@@ -12,10 +12,10 @@ the result.
 [`docs/api/game-engine.md`](../api/game-engine.md) is the spec. It is already
 merged and frozen, together with:
 
-- `lib/engine/types.ts` — the types
-- `lib/engine/config.ts` — `DEFAULT_CONFIG`, the obstacle layout, spawn cells
+- `src/engine/types.ts` — the types
+- `src/engine/config.ts` — `DEFAULT_CONFIG`, the obstacle layout, spawn cells
 
-You implement `lib/engine/index.ts` exporting exactly four functions:
+You implement `src/engine/index.ts` exporting exactly four functions:
 
 ```ts
 createInitialState(config?: GameConfig, rng?: Rng): GameState
@@ -41,7 +41,7 @@ Never mutate the state you are handed. Return a new object.
 
 ## Tests
 
-`bun test`, colocated as `lib/engine/*.test.ts`. The spec's _Acceptance_ section
+`bun test`, colocated as `src/engine/*.test.ts`. The spec's _Acceptance_ section
 lists the cases you must cover. Two of them are the ones that actually catch
 bugs, so don't skimp:
 
@@ -58,8 +58,8 @@ draw proves nothing.
 
 ## Done when
 
-- [ ] `lib/engine/index.ts` implements all four functions per the spec
+- [ ] `src/engine/index.ts` implements all four functions per the spec
 - [ ] Every case in the spec's _Acceptance_ section has a test
 - [ ] `bun test` green, `bun run check` green, `bun run build` green
-- [ ] Nothing under `lib/engine/` imports React, `three` or a browser API
+- [ ] Nothing under `src/engine/` imports React, `three` or a browser API
 - [ ] PR opened from `backend/game-engine`, Deploy Preview verified building
