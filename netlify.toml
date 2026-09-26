@@ -1,0 +1,13 @@
+# Build settings live here, not in the Netlify UI. Without a build command,
+# Netlify publishes the repo root as raw static files and the Next.js app 404s.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Netlify's Next.js runtime. Installed by Netlify at build time from this
+# declaration, so it is not a project dependency.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
