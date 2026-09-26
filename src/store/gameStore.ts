@@ -36,6 +36,8 @@ export type GameStore = {
   game: GameState | null
   bestScore: number
   hasBestScore: boolean
+  /** True only for the run that just beat the previous best. */
+  isNewBest: boolean
   startGame: () => void
   /** Player input path — D-pad and keyboard both land here. */
   requestDirection: (dir: Direction) => void
@@ -48,10 +50,11 @@ export const useGameStore = create<GameStore>()((set, get) => ({
   game: null,
   bestScore: 0,
   hasBestScore: false,
+  isNewBest: false,
 
   startGame: () => {
     const game = createInitialState(DEFAULT_CONFIG)
-    set({ status: 'playing', game })
+    set({ status: 'playing', game, isNewBest: false })
   },
 
   requestDirection: (dir) => {
@@ -65,9 +68,14 @@ export const useGameStore = create<GameStore>()((set, get) => ({
     if (status !== 'playing' || game === null) return
     const next = engineTick(game)
     if (next === game) return
-    if (next.status === 'gameOver' && next.score > bestScore) {
-      writeBestScore(next.score)
-      set({ game: next, status: 'gameOver', bestScore: next.score })
+    if (next.status === 'gameOver') {
+      const isNewBest = next.score > bestScore
+      if (isNewBest) {
+        writeBestScore(next.score)
+        set({ game: next, status: 'gameOver', bestScore: next.score, isNewBest })
+      } else {
+        set({ game: next, status: 'gameOver', isNewBest })
+      }
       return
     }
     set({ game: next })
