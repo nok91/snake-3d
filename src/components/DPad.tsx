@@ -1,19 +1,23 @@
 import { useState } from 'react'
-import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
+import type {
+  CSSProperties,
+  KeyboardEvent as ReactKeyboardEvent,
+  PointerEvent as ReactPointerEvent,
+  ReactElement,
+} from 'react'
 import type { Direction } from '@/engine/types'
 import { useGameStore } from '@/store/gameStore'
 
 type DirectionButtonProps = {
-  label: string
+  glyph: string
+  name: string
   direction: Direction
   style: CSSProperties
   onDir: (dir: Direction) => void
 }
 
-import type { CSSProperties } from 'react'
-
 function DirectionButton(props: DirectionButtonProps): ReactElement {
-  const { label, direction, style, onDir } = props
+  const { glyph, name, direction, style, onDir } = props
   const [pressed, setPressed] = useState(false)
 
   const handleDown = (event: ReactPointerEvent<HTMLButtonElement>) => {
@@ -24,14 +28,24 @@ function DirectionButton(props: DirectionButtonProps): ReactElement {
 
   const handleUp = () => setPressed(false)
 
+  const handleKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
+    // Buttons activate on Enter/Space via click, which this component does not
+    // handle — pointer events only. Wire the key to the same action so the
+    // D-pad is usable with keyboard focus as well.
+    if (event.key !== 'Enter' && event.key !== ' ') return
+    event.preventDefault()
+    onDir(direction)
+  }
+
   return (
     <button
       type="button"
-      aria-label={label}
+      aria-label={`Move ${name.toLowerCase()}`}
       onPointerDown={handleDown}
       onPointerUp={handleUp}
       onPointerLeave={handleUp}
       onPointerCancel={handleUp}
+      onKeyDown={handleKeyDown}
       style={{
         ...style,
         width: 56,
@@ -50,16 +64,16 @@ function DirectionButton(props: DirectionButtonProps): ReactElement {
         transform: pressed ? 'translateY(2px)' : 'none',
       }}
     >
-      {label}
+      <span aria-hidden="true">{glyph}</span>
     </button>
   )
 }
 
-const GRID: Record<Direction, { label: string; row: number; col: number }> = {
-  up: { label: '↑', row: 1, col: 2 },
-  down: { label: '↓', row: 3, col: 2 },
-  left: { label: '←', row: 2, col: 1 },
-  right: { label: '→', row: 2, col: 3 },
+const GRID: Record<Direction, { glyph: string; name: string; row: number; col: number }> = {
+  up: { glyph: '↑', name: 'Up', row: 1, col: 2 },
+  down: { glyph: '↓', name: 'Down', row: 3, col: 2 },
+  left: { glyph: '←', name: 'Left', row: 2, col: 1 },
+  right: { glyph: '→', name: 'Right', row: 2, col: 3 },
 }
 
 /**
@@ -84,7 +98,8 @@ export function DPad(): ReactElement {
       {Object.entries(GRID).map(([dir, cell]) => (
         <DirectionButton
           key={dir}
-          label={cell.label}
+          glyph={cell.glyph}
+          name={cell.name}
           direction={dir as Direction}
           onDir={requestDirection}
           style={{
