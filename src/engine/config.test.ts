@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test'
+import { describe, expect, test } from 'vitest'
 import { DEFAULT_CONFIG, GRID_SIZE, OBSTACLES, initialSnakeCells } from './config'
 
 const key = (x: number, z: number) => `${x},${z}`
