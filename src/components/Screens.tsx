@@ -57,6 +57,7 @@ export function Screens(): ReactElement {
         <>
           <h1 style={{ margin: 0, fontSize: 32 }}>Snake 3D</h1>
           <p style={{ margin: 0 }}>Arrows / WASD or the D-pad to steer.</p>
+          <p style={{ margin: 0, opacity: 0.8, fontSize: 14 }}>Enter starts, Space restarts.</p>
           {hasBestScore ? <p style={{ margin: 0 }}>Best score: {bestScore}</p> : null}
           <PlayButton label="Play" onStart={startGame} />
         </>

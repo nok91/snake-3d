@@ -15,14 +15,24 @@ const KEY_DIRECTIONS: Record<string, Direction> = {
 
 /**
  * Keyboard input: arrow keys and WASD share the D-pad's store action, so both
- * paths behave identically. preventDefault on the arrows stops the page from
- * scrolling (the browser fires scroll even with overflow hidden).
+ * paths behave identically. Enter and Space start or restart a run, so the
+ * game is fully playable without a pointer. preventDefault on the arrows and
+ * space stops the page from scrolling (the browser fires scroll even with
+ * overflow hidden) and keeps Space from re-clicking a focused button.
  */
 export function useKeyboardControls(): void {
   useEffect(() => {
-    const requestDirection = useGameStore.getState().requestDirection
-
     const onKeyDown = (event: KeyboardEvent) => {
+      const { requestDirection, startGame, status } = useGameStore.getState()
+
+      if (event.key === 'Enter' || event.key === ' ') {
+        if (status === 'idle' || status === 'gameOver') {
+          event.preventDefault()
+          startGame()
+        }
+        return
+      }
+
       const dir = KEY_DIRECTIONS[event.key]
       if (dir === undefined) return
       if (event.key.startsWith('Arrow')) event.preventDefault()
