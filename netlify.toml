@@ -1,13 +1,18 @@
 # Build settings live here, not in the Netlify UI. Without a build command,
-# Netlify publishes the repo root as raw static files and the Next.js app 404s.
+# Netlify publishes the repo root as raw static files and the app 404s.
+#
+# Sanity check on any Deploy Preview: `/` serves the built HTML (it references
+# hashed `/assets/*.js`) and `/package.json` returns 404. If `/package.json`
+# returns the file, the build did not run and you are looking at the repo root.
 [build]
-  command = "npm run build"
-  publish = ".next"
+  command = "bun run build"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "22"
 
-# Netlify's Next.js runtime. Installed by Netlify at build time from this
-# declaration, so it is not a project dependency.
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+# No SPA catch-all redirect on purpose. The game is a single route, so `/` is
+# served straight from `dist/index.html` and a refresh needs no fallback. A
+# `/*` -> `/index.html` 200 rule would also answer `/package.json` with the app
+# shell, which would silently break the "did the build actually run" check
+# above. Add the rule only if client-side routing ever lands.
