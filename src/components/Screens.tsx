@@ -46,6 +46,7 @@ export function Screens(): ReactElement {
   const score = useGameStore((s) => s.game?.score ?? 0)
   const bestScore = useGameStore((s) => s.bestScore)
   const hasBestScore = useGameStore((s) => s.hasBestScore)
+  const isNewBest = useGameStore((s) => s.isNewBest)
   const startGame = useGameStore((s) => s.startGame)
 
   if (status === 'playing') return <></>
@@ -64,8 +65,9 @@ export function Screens(): ReactElement {
           <h1 style={{ margin: 0, fontSize: 32 }}>Game over</h1>
           <p style={{ margin: 0 }}>
             Score: {score}
-            {score > 0 && score >= bestScore ? ' — new best!' : ''}
+            {isNewBest ? ' — new best!' : ''}
           </p>
+          {!isNewBest && hasBestScore ? <p style={{ margin: 0 }}>Best: {bestScore}</p> : null}
           <PlayButton label="Play again" onStart={startGame} />
         </>
       )}
