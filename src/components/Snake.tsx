@@ -42,7 +42,7 @@ export function Snake(): ReactElement {
     <group>
       {(snake ?? []).map((cell, index) => (
         <SegmentMesh
-          key={`${index}-${cell.x}-${cell.z}`}
+          key={index}
           cell={cell}
           isHead={index === 0}
           geometry={geometry}
