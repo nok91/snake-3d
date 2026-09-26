@@ -1,0 +1,42 @@
+:root {
+  --sky: #8fd3ff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  /* The board is always fully visible, so the page must never scroll or bounce. */
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: var(--sky);
+  color: #123;
+  font-family:
+    ui-rounded,
+    'Segoe UI',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  /* Kill double-tap zoom and drag-scroll on touch devices during play. */
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Use the real viewport height on mobile, where 100vh includes browser chrome. */
+  height: 100dvh;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  touch-action: manipulation;
+}

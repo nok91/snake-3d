@@ -1,7 +1,10 @@
 # Build settings live here, not in the Netlify UI. Without a build command,
 # Netlify publishes the repo root as raw static files and the Next.js app 404s.
+#
+# Sanity check on any Deploy Preview: `/` renders the app and `/package.json`
+# returns 404. If `/package.json` returns the file, the build did not run.
 [build]
-  command = "npm run build"
+  command = "bun run build"
   publish = ".next"
 
 [build.environment]
