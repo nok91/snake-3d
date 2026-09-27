@@ -184,19 +184,42 @@ describe('tick — game over conditions', () => {
   })
 
   test('obstacle: tree', () => {
-    // Spawn column x=7 heading up: the tree at (7,2) lies straight ahead.
+    // Spawn column x=7 heading up; the tree at (8,2) sits one column right of
+    // the spawn path. Step up 4 times to (7,3), slip right to (8,3), then head
+    // up into the tree at (8,2).
     const rng = seededRng(1)
     let s = createInitialState(DEFAULT_CONFIG, rng)
     s = run(s, 4, rng) // head z: 7 -> 3
     expect(s.status).toBe('playing')
     expect(s.snake[0]).toEqual({ x: 7, z: 3 })
-    expect(tick(s).status).toBe('gameOver')
+    s = tick(enqueueDirection(s, 'right'), rng) // head (8,3): still clear
+    expect(s.status).toBe('playing')
+    expect(s.snake[0]).toEqual({ x: 8, z: 3 })
+    s = tick(enqueueDirection(s, 'up'), rng) // head (8,2): the tree
+    expect(s.status).toBe('gameOver')
+    expect(s.snake[0]).toEqual({ x: 8, z: 3 }) // board frozen on death
   })
 
   test('obstacle: rock', () => {
     // Single rock directly in the path, one cell ahead of the head.
     const s = createInitialState(cfgWith([{ cell: { x: 7, z: 6 } }]), seededRng(1))
     expect(tick(s).status).toBe('gameOver')
+  })
+
+  test('an unsteered run survives past 4 ticks and dies at the wall', () => {
+    // Regression for NDH-17: the tree at (7,2) used to kill an unsteered snake
+    // on tick 5 (~1.3s), before a player could react. With the spawn column
+    // clear, the same run must stay alive through the reaction window and end
+    // against the top wall on tick 8 (head z: 7 -> 0 -> -1).
+    const rng = seededRng(1)
+    let s = createInitialState(DEFAULT_CONFIG, rng)
+    s = run(s, 4, rng)
+    expect(s.status).toBe('playing') // past the old death tick
+    expect(s.snake[0]).toEqual({ x: 7, z: 3 })
+    s = run(s, 3, rng)
+    expect(s.status).toBe('playing') // head flush with the top edge, z=0
+    expect(s.snake[0]).toEqual({ x: 7, z: 0 })
+    expect(tick(s).status).toBe('gameOver') // the wall, not a tree
   })
 
   test('self: a tight spiral at length 5 ends in the snake own body', () => {
