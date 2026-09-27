@@ -33,6 +33,33 @@ describe('board config', () => {
     expect(blocked.has(key(head!.x, head!.z - 1))).toBe(false)
   })
 
+  test('no obstacle within the first 4 cells of the spawn path', () => {
+    // Regression for NDH-17: the tree at (7,2) sat in the spawn column within
+    // reach of an unsteered snake. The straight-line path from the head in the
+    // initial direction must stay clear for at least 4 cells — roughly the
+    // window a player needs to see the board and make a first move.
+    const [head] = initialSnakeCells()
+    expect(head).toBeDefined()
+    const blocked = new Set(OBSTACLES.map(({ cell }) => key(cell.x, cell.z)))
+    const mid = head!.x
+    for (let step = 1; step <= 4; step++) {
+      expect(blocked.has(key(mid, head!.z - step))).toBe(false)
+    }
+  })
+
+  test('the whole spawn column ahead of the head is clear to the wall', () => {
+    // The layout comment promises the middle column is kept clear so an
+    // unsteered run reaches the wall, never an obstacle. Check every cell
+    // between the head and the edge in the initial direction (`up`), not just
+    // the first few — this is the invariant the (7,2) tree broke.
+    const [head] = initialSnakeCells()
+    expect(head).toBeDefined()
+    const blocked = new Set(OBSTACLES.map(({ cell }) => key(cell.x, cell.z)))
+    for (let z = head!.z - 1; z >= 0; z--) {
+      expect(blocked.has(key(head!.x, z))).toBe(false)
+    }
+  })
+
   test('the speed curve shortens the interval but respects the floor', () => {
     const { baseTickMs, tickStepMs, minTickMs } = DEFAULT_CONFIG
     expect(baseTickMs).toBeGreaterThan(minTickMs)
